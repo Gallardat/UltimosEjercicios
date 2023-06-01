@@ -2,6 +2,7 @@ package com.softtek.proyecto2305.servicio;
 
 import com.softtek.proyecto2305.modelo.Cliente;
 import com.softtek.proyecto2305.modelo.Orden;
+import com.softtek.proyecto2305.repositorio.CrudImpl2;
 import com.softtek.proyecto2305.repositorio.IOrdenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class OrdenServicio implements IOrderServicio{
+public class OrdenServicio extends CrudImpl2<Orden, Short>implements IOrderServicio{
 
     @Autowired
     IOrdenRepo repo;
@@ -80,5 +81,30 @@ public class OrdenServicio implements IOrderServicio{
 
         respuesta.forEach((idCliente, suma) -> System.out.println(idCliente + " SUMA" + suma));
         return respuesta;
+    }
+
+    @Override
+    public Orden registrar(Orden orden) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Orden modificar(Orden orden) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<Orden> listar(Orden orden) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Orden listarPorId(Short aShort) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void eliminar(Short aShort) throws Exception {
+
     }
 }

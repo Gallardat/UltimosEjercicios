@@ -1,5 +1,6 @@
 package com.softtek.proyecto2305;
 
+import com.softtek.proyecto2305.dto.ProductoDto;
 import com.softtek.proyecto2305.modelo.Producto;
 import com.softtek.proyecto2305.servicio.ClienteServicio;
 import com.softtek.proyecto2305.servicio.OrdenServicio;
@@ -28,7 +29,6 @@ public class Application implements CommandLineRunner {
 
 
 
-
     public static void main(String[] args) {
 
         SpringApplication.run(Application.class, args);
@@ -36,8 +36,14 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-       System.out.println("Select * from productos ");
-        productoServicio.obtenerTodosLosProductos().forEach(System.out::println);
+
+
+    productoServicio.obtenerPrecioPromedioPorSupplier();
+    productoServicio.obtenerSumaInventario();
+    productoServicio.obtenerSinDescontinuado();
+
+       /*System.out.println("Select * from productos ");
+        productoServicio.obtenerTodosLosProductos().forEach(System.out::println);*/
 /*
         System.out.println("Select * from clientes ");
         clienteServicio.obtenerClientes().forEach(System.out::println);*/
@@ -124,7 +130,7 @@ public class Application implements CommandLineRunner {
  /*       System.out.println("SELECT count(*) as num_productos FROM products GROUP BY category_id;");
         productoServicio.obtenerNumProductos();*/
 
-    /*    System.out.println("SELECT avg(unit_price) as precio_promedio FROM products GROUP BY supplier_id;");
+/*        System.out.println("SELECT avg(unit_price) as precio_promedio FROM products GROUP BY supplier_id;");
         productoServicio.obtenerPrecioPromedioPorSupplier();*/
 /*
         System.out.println("SELECT sum(units_in_stock) as suma_inventario FROM products GROUP BY supplier_id;");

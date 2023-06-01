@@ -2,7 +2,9 @@ package com.softtek.proyecto2305.servicio;
 
 import com.softtek.proyecto2305.modelo.Cliente;
 import com.softtek.proyecto2305.modelo.Orden;
+import com.softtek.proyecto2305.repositorio.CrudImpl2;
 import com.softtek.proyecto2305.repositorio.IClienteRepo;
+import com.softtek.proyecto2305.repositorio.IGenericRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class ClienteServicio implements IClienteServicio {
+public class ClienteServicio extends CrudImpl2<Cliente,Short> implements IClienteServicio {
 
     @Autowired
     IClienteRepo clienteRepo;
@@ -93,4 +95,33 @@ public class ClienteServicio implements IClienteServicio {
     }
 
 
+    @Override
+    public Cliente registrar(Cliente cliente) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Cliente modificar(Cliente cliente) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<Cliente> listar(Cliente cliente) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Cliente listarPorId(Short aShort) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void eliminar(Short aShort) throws Exception {
+
+    }
+
+    @Override
+    protected IGenericRepo<Cliente, Short> getRepo() {
+        return null;
+    }
 }

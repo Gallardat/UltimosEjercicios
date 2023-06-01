@@ -1,21 +1,26 @@
 package com.softtek.proyecto2305.servicio;
 
+import com.softtek.proyecto2305.dto.ProductoDto;
 import com.softtek.proyecto2305.modelo.Producto;
+import com.softtek.proyecto2305.repositorio.CrudImpl2;
+import com.softtek.proyecto2305.repositorio.ICrud;
+import com.softtek.proyecto2305.repositorio.IGenericRepo;
 import com.softtek.proyecto2305.repositorio.IProductoRepo;
 import org.apache.logging.log4j.util.PropertySource;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component
-public class ProductoServicio implements IProductoServicio {
+@Service
+public class ProductoServicio extends CrudImpl2<Producto,Short> implements IProductoServicio {
 
     @Autowired
     private  IProductoRepo productoRepo;
-
 
 
     @Override
@@ -268,27 +273,71 @@ public class ProductoServicio implements IProductoServicio {
 
     // SELECT avg(unit_price) as precio_promedio FROM products GROUP BY supplier_id;
 
-    public Map<Short, Double> obtenerPrecioPromedioPorSupplier() {
-        List<Producto> producto = obtenerTodosLosProductos();
-        Map<Short, Double> respuesta= producto.stream()
+    public List<ProductoDto> obtenerPrecioPromedioPorSupplier() {
+        //obtenemos una lista d eproductos
+        List<Producto> productos = obtenerTodosLosProductos();
+        //convertimos la lista de productos en un flujo de elementos
+        Map<Short, Double> respuesta = productos.stream()
+                //utilizamos el collect para, agrupar con el grouping y sacar el promedio con el averaging
                 .collect(Collectors.groupingBy(Producto::getIdSupplier,
                         Collectors.averagingDouble(Producto::getPrecioUnitario)));
-        respuesta.forEach((IdSupplier,precio) -> System.out.println("Id supplier "+IdSupplier+" Precio promedio "+precio));
-    return respuesta;
+        //el resultado se almacena es respuesta que e sun map donde cla vale es idsupplier short, y el promedio el double
+        //creamos una lista DTO utilizando la respuesta y seteando los datos, volvemos a convertir en un flujo de elementos
+        //con el map mapeamos cada elemento que queremos del resultado de MAP y lo almacenamos en un objeto deto
+        // dentor creamos un objeto de producto dto para establecer las propiedaddes del mismo utilizando la clave y el valor de entrada del MAP
+        //Finalmente utilizamos  el collect para recopilar todos los objetos mapeados en la lista de productos deto"resultados"
+        List<ProductoDto> resultados = respuesta.entrySet().stream()
+                .map(e-> {
+                    ProductoDto dto = new ProductoDto();
+                    dto.setIdSupplier(e.getKey());
+                    dto.setPrecioPromedio(e.getValue());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        resultados.forEach(dto ->
+                System.out.println("Id supplier: " + dto.getIdSupplier() + " Precio promedio: " + dto.getPrecioPromedio()));
+        return resultados;
     }
+
 
     //SELECT sum(units_in_stock) as suma_inventario FROM products GROUP BY supplier_id;
 
-    public Map<Short, Integer> obtenerSumaInventario() {
-        List<Producto> producto = obtenerTodosLosProductos();
-        Map<Short, Integer> resultado =  producto.stream()
-                .collect(Collectors.groupingBy(Producto::getIdSupplier, Collectors.summingInt(Producto::getUnidadesEnStock)));
-
-        resultado.forEach((supplierId, sum) ->
-                System.out.println("supplier_id: " + supplierId + ", suma_inventario: " + sum));
-        return resultado;
+    public List<ProductoDto> obtenerSumaInventario() {
+        List<Producto> productos = obtenerTodosLosProductos();
+        Map<Short, Integer> respuesta = productos.stream()
+                .collect(Collectors.groupingBy(Producto::getIdSupplier,
+                        Collectors.summingInt(Producto::getUnidadesEnStock)));
+        List<ProductoDto> resultados = respuesta.entrySet().stream()
+                .map(e -> {
+                    ProductoDto dto = new ProductoDto();
+                    dto.setIdSupplier(e.getKey());
+                    dto.setSumainventario(e.getValue());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        resultados.forEach(dto ->
+                System.out.println("supplier_id: " + dto.getIdSupplier() + ", suma_inventario: " + dto.getSumainventario() + ", sum"));
+        return resultados;
     }
 
+    public List<ProductoDto> obtenerSinDescontinuado() {
+        List<Producto> productos = obtenerTodosLosProductos();
+        Map<Short, Double> respuesta = productos.stream()
+                .filter(producto ->producto.getDiscontinued() > 0)
+                .collect(Collectors.groupingBy(Producto::getIdSupplier,
+                        Collectors.averagingDouble(Producto::getPrecioUnitario)));
+        List<ProductoDto> resultados = respuesta.entrySet().stream()
+                .map(e-> {
+                    ProductoDto dto = new ProductoDto();
+                    dto.setIdSupplier(e.getKey());
+                    dto.setPrecioPromedio(e.getValue());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        resultados.forEach(dto ->
+                System.out.println("Id supplier: " + dto.getIdSupplier() + " Precio promedio: " + dto.getPrecioPromedio()));
+        return resultados;
+    }
 
 
 }
